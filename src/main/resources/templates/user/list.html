@@ -23,6 +23,9 @@
             <td th:text="${user.gender}"></td>
             <td th:text="${user.age}"></td>
             <td th:text="${user.email}"></td>
+            <td>
+                <a th:href="@{/user/update/{id}/(id=${user.id})}">更新</a>
+            </td>
         </tr>
     </table>
 </body>
