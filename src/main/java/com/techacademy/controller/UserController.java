@@ -5,6 +5,8 @@ import java.util.Set;
 import org.springframework.stereotype.Controller;
 
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult; // 追加
+import org.springframework.validation.annotation.Validated; // 追加
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -16,7 +18,7 @@ import com.techacademy.entity.User;
 import com.techacademy.service.UserService;
 
 @Controller
-@RequestMapping("user")
+@RequestMapping("user")/**/
 public class UserController {
     private final UserService service;
 
@@ -42,14 +44,18 @@ public class UserController {
 
     /** User登録処理 */
     @PostMapping("/register")
-    public String postRegister(User user) {
+    public String postRegister(@Validated User user, BindingResult res, Model model) {
+        if(res.hasErrors()) {
+            // エラーあり
+            return getRegister(user);
+        }
         // User登録
         service.saveUser(user);
         // 一覧画面にリダイレクト
         return "redirect:/user/list";
     }
 
-    /** User更新画面を表示 */
+    /** User更新画面を表示 GetMapping画面を出すよということ。*/
     @GetMapping("/update/{id}/")
     public String getUser(@PathVariable("id") Integer id, Model model) {
         // Modelに登録
@@ -58,7 +64,8 @@ public class UserController {
         return "user/update";
     }
 
-    /** User更新処理 */
+    /** User更新処理 @PostMapping画面でもらってきたデータを受け取って処理をする*/
+    /*トランザクションは記述が長くなるので、サービスというクラスができた*/
     @PostMapping("/update/{id}/")
     public String postUser(User user) {
         // User登録
