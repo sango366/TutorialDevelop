@@ -65,9 +65,14 @@ public class UserController {
     }
 
     /** User更新処理 @PostMapping画面でもらってきたデータを受け取って処理をする*/
-    /*トランザクションは記述が長くなるので、サービスというクラスができた*/
     @PostMapping("/update/{id}/")
-    public String postUser(User user) {
+    public String postUser(@Validated User user, BindingResult res,Model model) {
+        if(res.hasErrors()) {
+            // エラーあり
+//            return getUser(id, model) ;
+            model.addAttribute("user", user);
+            return "user/update";
+        }
         // User登録
         service.saveUser(user);
         // 一覧画面にリダイレクト

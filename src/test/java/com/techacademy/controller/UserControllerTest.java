@@ -20,6 +20,8 @@ import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
+import static org.hamcrest.Matchers.*;
+
 import com.techacademy.entity.User;
 
 @SpringBootTest
@@ -59,5 +61,36 @@ class UserControllerTest {
         User user = (User)result.getModelAndView().getModel().get("user");
         assertEquals(1, user.getId());
         assertEquals("キラメキ太郎", user.getName());
+    }
+
+    @Test
+    @WithMockUser
+    public void testGetList() throws Exception {
+        mockMvc.perform(get("/user/list"))
+                // HTTPステータスが200 OKであることを検証
+                .andExpect(status().isOk())
+                // Modelにuserlistが含まれていること
+                .andExpect(model().attributeExists("userlist"))
+                // Modelにエラーが無いこと
+                .andExpect(model().hasNoErrors())
+                //viewの名前が user/list であること
+                .andExpect(view().name("user/list"))
+                // Modelからuserlistを取り出す
+                .andExpect(model().attribute("userlist", hasSize(3)))
+                // userlistから1件ずつ取り出し、idとnameを検証する
+                .andExpect(model().attribute("userlist", contains(
+                        allOf(
+                            hasProperty("id", is(1)),
+                            hasProperty("name", is("キラメキ太郎"))
+                        ),
+                        allOf(
+                            hasProperty("id", is(2)),
+                            hasProperty("name", is("キラメキ次郎"))
+                        ),
+                        allOf(
+                            hasProperty("id", is(3)),
+                            hasProperty("name", is("キラメキ花子"))
+                        )
+                )));
     }
 }

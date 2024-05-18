@@ -53,10 +53,11 @@ public class User {
     @Max(120) // 追加
     private Integer age;
 
-    /** メールアドレス。50桁。null許可 */
+    /** メールアドレス。50桁。null不許可 */
     @Column(length = 50)
     @Email // 追加
     @Length(max=50) // 追加
+    @NotEmpty // 追加
     private String email;
 
     @OneToOne(mappedBy="user")
