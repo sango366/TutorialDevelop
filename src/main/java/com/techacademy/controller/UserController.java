@@ -73,8 +73,7 @@ public class UserController {
     public String postUser(@Validated User user,@PathVariable("id") Integer id, BindingResult res, Model model) {
         if(res.hasErrors()) {
             model.addAttribute("user", user);
-//            return getUser(id,model);
-            return "user/update";
+            return getUser(id,model);
         }
         // User登録
         service.saveUser(user);
