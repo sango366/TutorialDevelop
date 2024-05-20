@@ -55,9 +55,13 @@ public class UserController {
         return "redirect:/user/list";
     }
 
+    //idを選んでそのユーザーの画面を表示する
     /** User更新画面を表示 GetMapping画面を出すよということ。*/
     @GetMapping("/update/{id}/")
     public String getUser(@PathVariable("id") Integer id, Model model) {
+        if(id == null) {
+            return "user/update";
+        }
         // Modelに登録
         model.addAttribute("user", service.getUser(id));
         // User更新画面に遷移
@@ -66,12 +70,10 @@ public class UserController {
 
     /** User更新処理 @PostMapping画面でもらってきたデータを受け取って処理をする*/
     @PostMapping("/update/{id}/")
-    public String postUser(@Validated User user, BindingResult res,Model model) {
+    public String postUser(@Validated User user,@PathVariable("id") Integer id, BindingResult res, Model model) {
         if(res.hasErrors()) {
-            // エラーあり
-//            return getUser(id, model) ;
             model.addAttribute("user", user);
-            return "user/update";
+            return getUser(null,model);
         }
         // User登録
         service.saveUser(user);
