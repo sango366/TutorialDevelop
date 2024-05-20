@@ -70,10 +70,10 @@ public class UserController {
 
     /** User更新処理 @PostMapping画面でもらってきたデータを受け取って処理をする*/
     @PostMapping("/update/{id}/")
-    public String postUser(@Validated User user,@PathVariable("id") Integer id, BindingResult res, Model model) {
+    public String postUser(@Validated User user, BindingResult res, Model model) {
         if(res.hasErrors()) {
             model.addAttribute("user", user);
-            return getUser(id,model);
+            return getUser(null,model);
         }
         // User登録
         service.saveUser(user);
